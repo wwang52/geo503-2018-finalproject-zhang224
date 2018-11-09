@@ -12,7 +12,7 @@
 <meta name="author" content="Yichi Zhang" />
 
 
-<title>I have the best titles</title>
+<title>Connection between Deer Tick and Lyme Disease</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -303,14 +303,67 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">I have the best titles</h1>
-<h3 class="subtitle"><em>Subtitle here if desired</em></h3>
+<h1 class="title toc-ignore">Connection between Deer Tick and Lyme Disease</h1>
+<h3 class="subtitle"><em>Take counties in New York State for example</em></h3>
 <h4 class="author"><em>Yichi Zhang</em></h4>
+<h4 class="date"><em>6/11/2018</em></h4>
 
 </div>
 
 
-
+<div id="instruction-and-background" class="section level1">
+<h1>Instruction and background:</h1>
+<blockquote>
+<p>About Lyme disease and Ticks</p>
+</blockquote>
+<p>Lyme disease is the most prevalent tick-borne disease in New York State and is prevalent in the Northeast &amp; Great Lakes region. <img src="https://c.o0bg.com/rf/image_960w/Boston/2011-2020/2018/05/10/BostonGlobe.com/Metro/Images/lymemap-15798.jpg" width="700"></p>
+<p>Lyme disease is an infection caused by the bacteria Borrelia burgdorferi and is spread to humans through the bite of infected blacklegged ticks (or deer ticks). According to the Centers for Disease Control and Prevention (CDC), the tick must be attached to the skin for 36 to 48 hours or more for bacterium transmission to occur. Typical symptoms include fever, headache, fatigue, and a characteristic skin rash called erythema migrans. If left untreated, infection can spread to joints, the heart, and the nervous system. Lyme disease is diagnosed based on symptoms, physical findings (e.g., rash), and the possibility of exposure to infected ticks.</p>
+<p><img src="https://www.purposegames.com/images/games/background/338/338017.png" width="500"></p>
+<p>Ticks can infect humans and pets with bacteria, viruses, and parasites that can cause serious illness. Infected deer ticks can be found throughout New York State,but not all deer ticks are infected with the bacteria. Lyme disease can affect people of any age. A vaccine for Lyme disease is not currently available.Steps to prevent Lyme disease include using insect repellent, removing ticks promptly, applying pesticides, and reducing tick habitat. The ticks that transmit Lyme disease can occasionally transmit other tickborne diseases as well.</p>
+<p>Click <a href="http://www.healthecny.org/index.php?module=indicators&amp;controller=index&amp;action=view&amp;indicatorId=305&amp;localeId=132865">here</a> to get more information about Lyme Disease Incidence Rate in Central New York.</p>
+</div>
+<div id="data-and-preparation" class="section level1">
+<h1>Data and Preparation:</h1>
+<p>Raw data include (1) Deer Tick Surveillance: Adults (Oct to Dec) excluding Powassan virus: Beginning 2008. <a href="https://health.data.ny.gov/Health/Deer-Tick-Surveillance-Adults-Oct-to-Dec-excluding/vzbp-i2d4">data source1</a> and (2) Community Health Lyme Disease Incidence Rate per 100000 by County. <a href="https://health.data.ny.gov/Health/Community-Health-Lyme-Disease-Incidence-Rate-per-1/6sxr-cqij">data source2</a> All these data are download from The Official Website of New York State.Also,(3)basement map of New York State which contains population data of each county. <a href="https://gis.ny.gov/gisdata/inventories/details.cfm?DSID=1278">data source3</a></p>
+<p>To Analysis the connection between deer tick and Lyme Disease, there are three main steps in my project:</p>
+<ul>
+<li>visualizing the Lyme Disease Incidence of 62 counties in New York State.</li>
+<li>visualizing the Tick population Density and Percentage of adult deer ticks that tested positive for Borrelia burgdorferi.</li>
+<li>visualizing the connection between Lyme Disease Incidence and Ticks.</li>
+</ul>
+<blockquote>
+<p>Note</p>
+</blockquote>
+<p>Data(1) only provide adult tick infections at a precise location and at one point at time. Both measures, tick population density and percentage, of ticks infected with the specified bacteria or parasite can vary greatly within a very small area and within a county. This maybe causes some inaccuracies.</p>
+</div>
+<div id="methods" class="section level1">
+<h1>Methods:</h1>
+<p>Load packages:</p>
+<pre class="r"><code>library(sf)
+library(tidyverse)
+library(ggplot2)</code></pre>
+<p>Load raw data:</p>
+<pre class="r"><code>#load data
+map &lt;- sf::st_read(&#39;data/tupian/Counties.shp&#39;)
+map_sf &lt;- st_as_sf(map)
+deertick &lt;- read.csv(&#39;data/Deer_Tick.csv&#39;)
+disease &lt;- read.csv(&#39;data/Lyme_Disease.csv&#39;)</code></pre>
+<blockquote>
+<p>First step</p>
+</blockquote>
+<p>Conbine Lyme Disease Incidence with Base map data. The columes I need are County.Name and Percent.Rate(Lyme Disease Incidence per 100,000). Then I change the name of Name colume, to make it coincidence to join:</p>
+<pre class="r"><code>#combine data
+disease_select &lt;- select(disease,County.Name,Percent.Rate)
+names(disease_select)[1] &lt;- &quot;NAME&quot;
+names(disease_select)[2] &lt;- &quot;Incidence&quot;
+map_disease &lt;- full_join(map_sf,disease_select,by=&quot;NAME&quot;)</code></pre>
+<p>Visualization of Lyme disease Incidence of every counties in New York State:</p>
+<pre class="r"><code>#visualization of Incidence of Lyme disease
+ggplot()+
+  geom_sf(aes(fill=log2(Incidence)),data=map_disease,colour = &quot;white&quot;)+
+ggtitle(&#39;Distribution of Lyme Disease Incidence&#39;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
 
 <!-- give the footer some space -->
 <br/>
