@@ -62,6 +62,7 @@ names(disease_select)[2] <- "Incidence"
 map_disease <- full_join(map_sf,disease_select,by="NAME")
 ```
 
+
 Visualization of Lyme disease Incidence of every counties in New York State:
 
 ```{r}
